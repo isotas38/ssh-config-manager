@@ -20,6 +20,9 @@ func Parse(r io.Reader) (Hosts, error) {
 	sc := bufio.NewScanner(bytes.NewReader(data))
 	for sc.Scan() {
 		line := strings.TrimSpace(sc.Text())
+		if len(line) == 0 {
+			continue
+		}
 		fields := strings.Fields(line)
 		if fields[0] == "Host" {
 			if _, ok := m["Host"]; ok {

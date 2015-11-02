@@ -17,6 +17,10 @@ var (
 	add            = app.Command("add", "Add host")
 	addHost        = add.Arg("host", "Name for a host").Required().String()
 	addHostName    = add.Arg("hostname", "HostName of the specified host").Required().String()
+	addUser        = add.Flag("user", "").Short('u').String()
+	addPort        = add.Flag("port", "").Short('p').String()
+	addIdentify    = add.Flag("identify", "").Short('i').String()
+	addParams      = add.Flag("params", "").Short('P').StringMap()
 	update         = app.Command("update", "")
 	updateHost     = update.Arg("host", "").Required().String()
 	updateHostName = update.Arg("hostname", "HostName of the specified host").Required().String()
@@ -24,8 +28,17 @@ var (
 	removeHost     = remove.Arg("host", "").Required().String()
 )
 
+var (
+	hosts           Hosts
+	ssh_config_file = os.ExpandEnv("$HOME/.ssh/config")
+)
+
+func addCommand(name, ip, user, port, identify string, params map[string]string) {
+	hosts = hosts.addHost(name, ip, user, port, identify, params)
+	hosts.saveConfig(ssh_config_file)
+}
+
 func main() {
-	ssh_config_file := os.ExpandEnv("$HOME/.ssh/config")
 	file, err := os.Open(ssh_config_file)
 	if err != nil {
 		log.Fatal(err)
@@ -43,7 +56,7 @@ func main() {
 	case show.FullCommand():
 		fmt.Println(hosts.GetHost(*showHost))
 	case add.FullCommand():
-		fmt.Println(hosts.addHost(*addHost, *addHostName))
+		addCommand(*addHost, *addHostName, *addUser, *addPort, *addIdentify, *addParams)
 	case list.FullCommand():
 		hosts.listHost()
 	case update.FullCommand():

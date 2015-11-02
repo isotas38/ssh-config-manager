@@ -121,15 +121,15 @@ func (host *Host) String() string {
 	return buf.String()
 }
 
-func (hosts Hosts) GetHost(name string) *Host {
+func (hosts Hosts) GetHost(name string) (int, *Host) {
 	for i1, v1 := range hosts {
 		for _, v2 := range v1.Host {
 			if v2 == name {
-				return hosts[i1]
+				return i1, v1
 			}
 		}
 	}
-	return nil
+	return -1, nil
 }
 
 func (hosts Hosts) addHost(name, ip string) Hosts {

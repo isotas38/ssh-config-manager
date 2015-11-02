@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"reflect"
 	"strings"
 )
@@ -184,15 +185,16 @@ func (hosts Hosts) listHost() []string {
 }
 
 func (hosts Hosts) removeHost(name string) Hosts {
-	for i1, v1 := range hosts {
-		for _, v2 := range v1.Host {
-			if v2 == name {
-				copy(hosts[i1:], hosts[i1+1:])
-				hosts[len(hosts)-1] = nil
-				hosts = hosts[:len(hosts)-1]
-				return hosts
-			}
-		}
+	index, _ := hosts.GetHost(name)
+	if index < 0 {
+		return nil
 	}
-	return nil
+	copy(hosts[index:], hosts[index+1:])
+	hosts[len(hosts)-1] = nil
+	hosts = hosts[:len(hosts)-1]
+	return hosts
+}
+
+func (hosts Hosts) saveConfig(file_path string) error {
+	return ioutil.WriteFile(file_path, []byte(hosts.String()), 0644)
 }

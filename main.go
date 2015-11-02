@@ -49,6 +49,14 @@ func showCommand(name string) {
 	fmt.Println(host)
 }
 
+func removeCommand(name string) {
+	if hosts = hosts.removeHost(name); hosts != nil {
+		hosts.saveConfig(ssh_config_file)
+	} else {
+		log.Fatalf("host %s is not found.\n", name)
+	}
+}
+
 func main() {
 	file, err := os.Open(ssh_config_file)
 	if err != nil {
@@ -73,6 +81,6 @@ func main() {
 	case update.FullCommand():
 		fmt.Println(hosts.updateHost(*updateHost, *updateHostName))
 	case remove.FullCommand():
-		fmt.Println(hosts.removeHost(*removeHost))
+		removeCommand(*removeHost)
 	}
 }

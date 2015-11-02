@@ -10,13 +10,12 @@ import (
 )
 
 func Parse(r io.Reader) (Hosts, error) {
+	m := make(map[string][]string)
 	var hosts Hosts
 	data, err := ioutil.ReadAll(r)
 	if err != nil {
 		return nil, err
 	}
-
-	m := make(map[string][]string)
 
 	sc := bufio.NewScanner(bytes.NewReader(data))
 	for sc.Scan() {
@@ -28,6 +27,7 @@ func Parse(r io.Reader) (Hosts, error) {
 				tmp, _ := json.Marshal(m)
 				json.Unmarshal(tmp, &host)
 				hosts = append(hosts, host)
+				m = make(map[string][]string)
 			}
 		}
 		m[fields[0]] = fields[1:]

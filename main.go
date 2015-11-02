@@ -38,6 +38,12 @@ func addCommand(name, ip, user, port, identify string, params map[string]string)
 	hosts.saveConfig(ssh_config_file)
 }
 
+func listCommand() {
+	for _, v := range hosts.listHost() {
+		fmt.Println(v)
+	}
+}
+
 func main() {
 	file, err := os.Open(ssh_config_file)
 	if err != nil {

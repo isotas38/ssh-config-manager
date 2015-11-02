@@ -44,6 +44,11 @@ func listCommand() {
 	}
 }
 
+func showCommand(name string) {
+	_, host := hosts.GetHost(name)
+	fmt.Println(host)
+}
+
 func main() {
 	file, err := os.Open(ssh_config_file)
 	if err != nil {
@@ -60,7 +65,7 @@ func main() {
 	case dump.FullCommand():
 		fmt.Print(hosts)
 	case show.FullCommand():
-		fmt.Println(hosts.GetHost(*showHost))
+		showCommand(*showHost)
 	case add.FullCommand():
 		addCommand(*addHost, *addHostName, *addUser, *addPort, *addIdentify, *addParams)
 	case list.FullCommand():

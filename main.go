@@ -51,7 +51,7 @@ func main() {
 	}
 	defer file.Close()
 
-	hosts, err := Parse(file)
+	hosts, err = Parse(file)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -64,7 +64,7 @@ func main() {
 	case add.FullCommand():
 		addCommand(*addHost, *addHostName, *addUser, *addPort, *addIdentify, *addParams)
 	case list.FullCommand():
-		hosts.listHost()
+		listCommand()
 	case update.FullCommand():
 		fmt.Println(hosts.updateHost(*updateHost, *updateHostName))
 	case remove.FullCommand():

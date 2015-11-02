@@ -132,14 +132,29 @@ func (hosts Hosts) GetHost(name string) (int, *Host) {
 	return -1, nil
 }
 
-func (hosts Hosts) addHost(name, ip string) Hosts {
+func (hosts Hosts) addHost(name, ip, user, port, identify string, params map[string]string) Hosts {
 	host := &Host{
-		Host: []string{name},
+		Host:     []string{name},
+		HostName: []string{ip},
 	}
-	s := []string{ip}
-	fVal := reflect.ValueOf(host).Elem()
-	sVal := reflect.ValueOf(s)
-	fVal.FieldByName("HostName").Set(sVal)
+
+	if user != "" {
+		host.User = []string{user}
+	}
+	if port != "" {
+		host.Port = []string{port}
+	}
+	if identify != "" {
+		host.IdentityFile = []string{identify}
+	}
+	for k, v := range params {
+		fVal := reflect.ValueOf(host).Elem().FieldByName(k)
+		s := []string{v}
+		sVal := reflect.ValueOf(s)
+		if fVal.IsValid() {
+			fVal.Set(sVal)
+		}
+	}
 	hosts = append(hosts, host)
 	return hosts
 }

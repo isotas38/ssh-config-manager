@@ -173,12 +173,14 @@ func (hosts Hosts) updateHost(name, ip string) Hosts {
 	return nil
 }
 
-func (hosts Hosts) listHost() {
+func (hosts Hosts) listHost() []string {
+	var hostlist []string
 	for _, v1 := range hosts {
 		for _, v2 := range v1.Host {
-			fmt.Println(v2)
+			hostlist = append(hostlist, v2)
 		}
 	}
+	return hostlist
 }
 
 func (hosts Hosts) removeHost(name string) Hosts {

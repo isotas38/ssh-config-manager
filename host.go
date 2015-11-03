@@ -134,6 +134,10 @@ func (hosts Hosts) GetHost(name string) (int, *Host) {
 }
 
 func (hosts Hosts) addHost(name, ip, user, port, identify string, params map[string]string) Hosts {
+	index, _ := hosts.GetHost(name)
+	if index != -1 {
+		return nil
+	}
 	host := &Host{
 		Host:     []string{name},
 		HostName: []string{ip},

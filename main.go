@@ -39,7 +39,6 @@ var (
 
 func addCommand(name, ip, user, port, identify string, params map[string]string) {
 	if hosts = hosts.addHost(name, ip, user, port, identify, params); hosts != nil {
-		hosts = hosts.addHost(name, ip, user, port, identify, params)
 		hosts.saveConfig(ssh_config_file)
 	} else {
 		log.Fatalf("host %s is already exist\n", name)

@@ -202,6 +202,15 @@ func (hosts Hosts) listHost() []string {
 	return hostlist
 }
 
+func (hosts Hosts) moveHost(old_host, new_host string) Hosts {
+	_, host := hosts.GetHost(old_host)
+	if host == nil {
+		return nil
+	}
+	host.Host = []string{new_host}
+	return hosts
+}
+
 func (hosts Hosts) removeHost(name string) Hosts {
 	index, _ := hosts.GetHost(name)
 	if index < 0 {

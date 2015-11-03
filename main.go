@@ -34,7 +34,7 @@ var (
 	cp             = app.Command("cp", "")
 	cpOldHost      = cp.Arg("old_host", "").Required().String()
 	cpNewHost      = cp.Arg("new_host", "").Required().String()
-	remove         = app.Command("remove", "")
+	remove         = app.Command("rm", "")
 	removeHost     = remove.Arg("host", "").Required().String()
 )
 

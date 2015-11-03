@@ -160,18 +160,32 @@ func (hosts Hosts) addHost(name, ip, user, port, identify string, params map[str
 	return hosts
 }
 
-func (hosts Hosts) updateHost(name, ip string) Hosts {
-	for i1, v1 := range hosts {
-		for _, v2 := range v1.Host {
-			if v2 == name {
-				s := []string{ip}
-				sVal := reflect.ValueOf(s)
-				reflect.ValueOf(hosts[i1]).Elem().FieldByName("HostName").Set(sVal)
-				return hosts
-			}
+func (hosts Hosts) updateHost(name, ip, user, port, identify string, params map[string]string) Hosts {
+	_, host := hosts.GetHost(name)
+	if host == nil {
+		return nil
+	}
+	if ip != "" {
+		host.HostName = []string{ip}
+	}
+	if user != "" {
+		host.User = []string{user}
+	}
+	if port != "" {
+		host.Port = []string{port}
+	}
+	if identify != "" {
+		host.IdentityFile = []string{identify}
+	}
+	for k, v := range params {
+		fVal := reflect.ValueOf(host).Elem().FieldByName(k)
+		s := []string{v}
+		sVal := reflect.ValueOf(s)
+		if fVal.IsValid() {
+			fVal.Set(sVal)
 		}
 	}
-	return nil
+	return hosts
 }
 
 func (hosts Hosts) listHost() []string {

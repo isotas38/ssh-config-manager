@@ -23,7 +23,11 @@ var (
 	addParams      = add.Flag("params", "").Short('P').StringMap()
 	update         = app.Command("update", "")
 	updateHost     = update.Arg("host", "").Required().String()
-	updateHostName = update.Arg("hostname", "HostName of the specified host").Required().String()
+	updateHostName = update.Flag("hostname", "HostName of the specified host").Short('h').String()
+	updateUser     = update.Flag("user", "").Short('u').String()
+	updatePort     = update.Flag("port", "").Short('p').String()
+	updateIdentify = update.Flag("identify", "").Short('i').String()
+	updateParams   = update.Flag("params", "").Short('P').StringMap()
 	remove         = app.Command("remove", "")
 	removeHost     = remove.Arg("host", "").Required().String()
 )
@@ -36,6 +40,14 @@ var (
 func addCommand(name, ip, user, port, identify string, params map[string]string) {
 	hosts = hosts.addHost(name, ip, user, port, identify, params)
 	hosts.saveConfig(ssh_config_file)
+}
+
+func updateCommand(name, ip, user, port, identify string, params map[string]string) {
+	if hosts = hosts.updateHost(name, ip, user, port, identify, params); hosts != nil {
+		hosts.saveConfig(ssh_config_file)
+	} else {
+		log.Fatalf("host %s is not found.\n", name)
+	}
 }
 
 func listCommand() {
@@ -79,7 +91,7 @@ func main() {
 	case list.FullCommand():
 		listCommand()
 	case update.FullCommand():
-		fmt.Println(hosts.updateHost(*updateHost, *updateHostName))
+		updateCommand(*updateHost, *updateHostName, *updateUser, *updatePort, *updateIdentify, *updateParams)
 	case remove.FullCommand():
 		removeCommand(*removeHost)
 	}

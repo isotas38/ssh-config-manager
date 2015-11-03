@@ -31,6 +31,9 @@ var (
 	move           = app.Command("mv", "Rename Host")
 	moveOldHost    = move.Arg("old_host", "").Required().String()
 	moveNewHost    = move.Arg("new_host", "").Required().String()
+	cp             = app.Command("cp", "")
+	cpOldHost      = cp.Arg("old_host", "").Required().String()
+	cpNewHost      = cp.Arg("new_host", "").Required().String()
 	remove         = app.Command("remove", "")
 	removeHost     = remove.Arg("host", "").Required().String()
 )
@@ -75,6 +78,14 @@ func moveCommand(old_host, new_host string) {
 	}
 }
 
+func cpCommand(old_host, new_host string) {
+	if hosts = hosts.copyHost(old_host, new_host); hosts != nil {
+		hosts.saveConfig(ssh_config_file)
+	} else {
+		log.Fatalf("host %s is not found.\n", old_host)
+	}
+}
+
 func removeCommand(name string) {
 	if hosts = hosts.removeHost(name); hosts != nil {
 		hosts.saveConfig(ssh_config_file)
@@ -108,6 +119,8 @@ func main() {
 		updateCommand(*updateHost, *updateHostName, *updateUser, *updatePort, *updateIdentify, *updateParams)
 	case move.FullCommand():
 		moveCommand(*moveOldHost, *moveNewHost)
+	case cp.FullCommand():
+		cpCommand(*cpOldHost, *cpNewHost)
 	case remove.FullCommand():
 		removeCommand(*removeHost)
 	}

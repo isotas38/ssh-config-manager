@@ -211,6 +211,17 @@ func (hosts Hosts) moveHost(old_host, new_host string) Hosts {
 	return hosts
 }
 
+func (hosts Hosts) copyHost(old_host, new_host string) Hosts {
+	_, host1 := hosts.GetHost(old_host)
+	if host1 == nil {
+		return nil
+	}
+	host2 := *host1
+	host2.Host = []string{new_host}
+	hosts = append(hosts, &host2)
+	return hosts
+}
+
 func (hosts Hosts) removeHost(name string) Hosts {
 	index, _ := hosts.GetHost(name)
 	if index < 0 {
